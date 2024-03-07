@@ -5,19 +5,19 @@ module.exports = {
   async execute(player, currTrack, rmLastMsg) {
     if (rmLastMsg) {
       const embed = endedEmbed(player.queue, currTrack);
-      player.currMsg.edit({
+      await player.currMsg.edit({
         embeds: [embed],
         components: [],
       });
       player.currMsg = null;
     }
 
-    if (++player.currIndex === player.queue.length) {
+    player.currIndex += 1;
+    if (player.currIndex === player.queue.length) {
       if (player.loop === 2) {
         player.currIndex = 0;
       } else if (player.loop === 0) {
-        player.currIndex = -1;
-        player.isPlaying = false;
+        player.emit('stop', player);
         return;
       }
     }

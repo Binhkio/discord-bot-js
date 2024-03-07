@@ -25,6 +25,7 @@ module.exports = {
         player.play(resource);
 
         player.once(AudioPlayerStatus.Idle, () => {
+            if (!player.isPlaying) return;
             if (player.loop === 1) {
                 player.emit('start', player, track, false);
             } else {
