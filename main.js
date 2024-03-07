@@ -3,13 +3,16 @@ const { TOKEN_1, TOKEN_2 } = require('./config.json');
 const fs = require('node:fs');
 const path = require('node:path');
 const { createAudioPlayer } = require('@discordjs/voice');
+const { keepAlive } = require('./server');
 
 process.on('unhandledRejection', (reason, p) => {
 	console.log("Reason", reason, "Promise", p);
 }).on('uncaughtException', err => {
 	console.error(err);
 	// handleLogError(err);
-})
+});
+
+keepAlive();
 
 const client = new Client({
 	intents: [
