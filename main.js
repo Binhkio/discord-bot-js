@@ -5,24 +5,27 @@ const path = require('node:path');
 const { createAudioPlayer } = require('@discordjs/voice');
 
 process.on('unhandledRejection', (reason, p) => {
-    console.log("Reason", reason, "Promise", p);
+	console.log("Reason", reason, "Promise", p);
 }).on('uncaughtException', err => {
-    console.error(err);
-    // handleLogError(err);
+	console.error(err);
+	// handleLogError(err);
 })
 
 const client = new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildVoiceStates,
-        GatewayIntentBits.GuildMessages,
-    ]
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildVoiceStates,
+		GatewayIntentBits.GuildMessages,
+	]
 });
 
 client.player = createAudioPlayer();
 client.player.isPlaying = false;
-client.player.isLoop = false;
+client.player.loop = 0; // 0-Disabled | 1-Track | 2-Queue
 client.player.queue = [];
+client.player.currIndex = -1;
+client.player.currMsg = null;
+client.player.voiceConnection = null;
 client.test = 2002;
 
 /**
@@ -42,7 +45,7 @@ for (const folder of commandFolders) {
 		const command = require(filePath);
 		if ('data' in command && 'execute' in command) {
 			client.commands.set(command.data.name, command);
-            console.log(`[SUCCESS] Command: ${command.data.name}`);
+			console.log(`[SUCCESS] Command: ${command.data.name}`);
 		} else {
 			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
 		}

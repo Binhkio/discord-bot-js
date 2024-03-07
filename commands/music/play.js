@@ -1,7 +1,8 @@
 const { SlashCommandBuilder } = require("discord.js");
 
 const playdl = require('play-dl');
-const { addEmbed } = require("../../src/components/embed");
+const { addEmbed, multiAddEmbed } = require("../../src/components/embed");
+const { joinChannelByInteraction } = require("../../utils/channel");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -19,7 +20,16 @@ module.exports = {
         const isPlaylist = interaction.options.getBoolean('playlist') || false;
         const player = interaction.client.player;
         const type = playdl.yt_validate(url);
-        
+
+        if (!player.voiceConnection) {
+            const newVoiceConnection = await joinChannelByInteraction(interaction);
+            if (!newVoiceConnection) return interaction.editReply({ content: `❌ No voice connection... try again ?`, ephemeral: true });
+
+            newVoiceConnection.subscribe(player);
+            player.voiceConnection = newVoiceConnection;
+            player.queue = [];
+        }
+
         if (type === 'video' || (type === 'playlist' && !isPlaylist && url.includes('watch'))) {
             const valid_url = url.split('&')[0];
             console.log(`[PLAY] ${valid_url}`);
@@ -35,17 +45,32 @@ module.exports = {
             await interaction.editReply({
                 embeds: [embed],
             });
+        }
+        else if ((type === 'playlist' && isPlaylist) || url.includes('playlist')) {
+            const info = await playdl.playlist_info(url);
+            const tracks = await info.all_videos();
 
-            // Play new audio if player is not playing
-            if (!player.isPlaying) {
-                player.isPlaying = true;
-                player.channel = interaction.channel;
+            tracks.forEach(track => {
+                track.user = interaction.user;
+                // Add tracks to queue
+                player.queue.push(track);
+            })
 
-                player.emit('start', player.queue, track);
-            }
-        } else {
-            interaction.editReply("OK");
+            const embed = multiAddEmbed(player.queue, info, tracks);
+            await interaction.editReply({
+                embeds: [embed],
+            });
         }
 
+        // Play new audio if player is not playing
+        if (!player.isPlaying) {
+            player.isPlaying = true;
+            player.currIndex = 0;
+            player.channel = interaction.channel;
+
+            player.emit('start', player, player.queue[0], true);
+        } else {
+            // Do nothing
+        }
     },
 };
