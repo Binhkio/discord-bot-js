@@ -29,10 +29,6 @@ module.exports = {
             player.voiceConnection = newVoiceConnection;
             
             player.queue = [];
-            player.isPlaying = false;
-            player.loop = 2; // 0-Disabled | 1-Track | 2-Queue
-            player.currIndex = -1;
-            player.currMsg = null;
         }
 
         if (type === 'video' || (type === 'playlist' && !isPlaylist && url.includes('watch'))) {
