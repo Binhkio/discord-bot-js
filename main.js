@@ -23,12 +23,6 @@ const client = new Client({
 });
 
 client.player = createAudioPlayer();
-client.player.isPlaying = false;
-client.player.loop = 0; // 0-Disabled | 1-Track | 2-Queue
-client.player.queue = [];
-client.player.currIndex = -1;
-client.player.currMsg = null;
-client.player.voiceConnection = null;
 client.test = 2002;
 
 /**
@@ -64,15 +58,18 @@ const playerEventFiles = fs.readdirSync('./events/player').filter(file => file.e
 for (const file of commonEventFiles) {
 	const event = require(`./events/common/${file}`);
 	if (event.once) {
-		client.once(event.name, (...args) => event.execute(...args));
+		client.once(event.name, (...args) => {event.execute(...args)});
 	} else {
-		client.on(event.name, (...args) => event.execute(...args));
+		client.on(event.name, (...args) => {event.execute(...args)});
 	}
 }
 for (const file of playerEventFiles) {
 	const event = require(`./events/player/${file}`);
 
-	client.player.addListener(event.name, (...args) => event.execute(...args));
+	client.player.addListener(event.name, (...args) => {
+		event.execute(...args);
+		console.log(`[${event.name}]`);
+	});
 }
 
 client.login(TOKEN_1 + TOKEN_2);

@@ -2,16 +2,14 @@ const { endedEmbed } = require("../../src/components/embed");
 
 module.exports = {
   name: 'skip',
-  async execute(player, currTrack, rmLastMsg) {
-    if (rmLastMsg) {
-      const embed = endedEmbed(player.queue, currTrack);
-      await player.currMsg.edit({
-        embeds: [embed],
-        components: [],
-      });
-      player.currMsg = null;
-    }
-
+  async execute(player, currTrack) {
+    const embed = endedEmbed(player.queue, currTrack);
+    await player.currMsg.edit({
+      embeds: [embed],
+      components: [],
+    });
+    player.currMsg = null;
+    
     player.currIndex += 1;
     if (player.currIndex === player.queue.length) {
       if (player.loop === 2) {
@@ -22,6 +20,6 @@ module.exports = {
       }
     }
 
-    player.emit('start', player, player.queue[player.currIndex], true);
+    player.emit('start', player, player.queue[player.currIndex]);
   },
 };

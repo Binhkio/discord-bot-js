@@ -19,7 +19,7 @@ module.exports = {
     });
 
     player.currIndex--;
-    player.emit('start', player, queue[player.currIndex], true);
+    player.emit('start', player, queue[player.currIndex]);
 
     interaction.deleteReply();
   }

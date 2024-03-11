@@ -15,6 +15,7 @@ module.exports = {
 
 			try {
 				await command.execute(interaction);
+				console.log(`[${interaction.commandName}]`);
 			} catch (error) {
 				console.error(error);
 				await interaction.editReply({

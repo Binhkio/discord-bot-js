@@ -27,12 +27,16 @@ module.exports = {
 
             newVoiceConnection.subscribe(player);
             player.voiceConnection = newVoiceConnection;
+            
             player.queue = [];
+            player.isPlaying = false;
+            player.loop = 2; // 0-Disabled | 1-Track | 2-Queue
+            player.currIndex = -1;
+            player.currMsg = null;
         }
 
         if (type === 'video' || (type === 'playlist' && !isPlaylist && url.includes('watch'))) {
             const valid_url = url.split('&')[0];
-            console.log(`[PLAY] ${valid_url}`);
 
             const info = await playdl.video_info(valid_url);
             const track = info.video_details;
@@ -68,7 +72,7 @@ module.exports = {
             player.currIndex = 0;
             player.channel = interaction.channel;
 
-            player.emit('start', player, player.queue[0], true);
+            player.emit('start', player, player.queue[0]);
         } else {
             // Do nothing
         }

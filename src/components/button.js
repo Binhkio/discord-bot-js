@@ -25,18 +25,19 @@ const pause = new ButtonBuilder()
     .setCustomId(JSON.stringify({ ffb: 'pause' }))
     .setStyle('Secondary')
 
-const methods = ['Disabled', 'Track', 'Queue']
-const icons = ['🛑', '🔂', '🔁']
+const methods = ['Không lặp', 'Lặp đơn', 'Lặp tất cả']
+const icons = ['🚫', '🔂', '🔁']
 const loop = (mode) => new ButtonBuilder()
     .setLabel(methods[mode])
     .setEmoji(icons[mode])
     .setCustomId(JSON.stringify({ ffb: 'loop' }))
     .setStyle('Secondary')
 
-// const lyrics = new ButtonBuilder()
-//     .setLabel('lyrics')
-//     .setCustomId(JSON.stringify({ffb: 'lyrics'}))
-//     .setStyle('Secondary')
+const stop = new ButtonBuilder()
+    .setLabel('Stop')
+    .setEmoji("⛔")
+    .setCustomId(JSON.stringify({ffb: 'stop'}))
+    .setStyle('Danger')
 
 module.exports = {
     back,
@@ -44,5 +45,5 @@ module.exports = {
     resume,
     pause,
     loop,
-    // lyrics
+    stop,
 }

@@ -1,12 +1,19 @@
+const { endedEmbed } = require("../../src/components/embed");
+
 module.exports = {
     name: 'stop',
-    async execute(player) {
-        player.stop();
+    async execute(player) {        
+        const embed = endedEmbed(player.queue, player.queue[player.currIndex]);
+        await player.currMsg.edit({
+            embeds: [embed],
+            components: [],
+        });
+
         player.isPlaying = false;
         player.queue = [];
         player.currIndex = -1;
+        player.currMsg = null;
 
-        const currTrack = player.queue[player.currIndex];
-        // player.emit('skip', currTrack, true);
+        player.stop();
     },
 };
