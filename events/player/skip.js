@@ -2,7 +2,8 @@ const { endedEmbed } = require("../../src/components/embed");
 
 module.exports = {
   name: 'skip',
-  async execute(player, currTrack) {
+  async execute(currTrack) {
+    const player = globalThis.client.player;
     const embed = endedEmbed(player.queue, currTrack);
     await player.currMsg.edit({
       embeds: [embed],
@@ -15,11 +16,11 @@ module.exports = {
       if (player.loop === 2) {
         player.currIndex = 0;
       } else if (player.loop === 0) {
-        player.emit('stop', player);
+        player.emit('stop');
         return;
       }
     }
 
-    player.emit('start', player, player.queue[player.currIndex]);
+    player.emit('start', player.queue[player.currIndex]);
   },
 };

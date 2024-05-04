@@ -5,12 +5,12 @@ module.exports = {
     .setName('pause')
     .setDescription('Pause player'),
   async execute(interaction) {
-    const player = interaction.client.player;
+    const player = globalThis.client.player;
 
     if (!player.isPlaying)
       return interaction.editReply({ content: `No music currently playing... try again ? ❌`, ephemeral: true });
 
-    player.emit('pause', player);
+    player.emit('pause');
 
     interaction.deleteReply();
   },

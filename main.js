@@ -25,10 +25,12 @@ const client = new Client({
 client.player = createAudioPlayer();
 client.player.queue = [];
 client.player.isPlaying = false;
-client.player.loop = 2; // 0-Disabled | 1-Track | 2-Queue
+client.player.loop = 0; // 0-Disabled | 1-Track | 2-Queue
 client.player.currIndex = -1;
 client.player.currMsg = null;
 client.test = 2002;
+
+globalThis.client = client;
 
 /**
  * Register commands

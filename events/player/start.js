@@ -7,7 +7,8 @@ const { createAudioResource, AudioPlayerStatus } = require("@discordjs/voice");
 // Start a new track
 module.exports = {
     name: 'start',
-    async execute(player, track) {
+    async execute(track) {
+        const player = globalThis.client.player;
         const embed = playEmbed(player.queue, track, player.currIndex);
 
         const row1 = new ActionRowBuilder().addComponents(back(player.currIndex > 0), pause, skip, loop(player.loop), stop);
@@ -29,7 +30,7 @@ module.exports = {
                 player.currIndex -= 1;
             }
             
-            player.emit('skip', player, track);
+            player.emit('skip', track);
         });
     },
 };

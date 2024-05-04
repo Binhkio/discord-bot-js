@@ -3,7 +3,7 @@ const { endedEmbed } = require("../../src/components/embed");
 module.exports = {
   name: 'back',
   async execute({ interaction }) {
-    const player = interaction.client.player;
+    const player = globalThis.client.player;
     const queue = player.queue;
     const currMsg = player.currMsg;
 
@@ -19,7 +19,7 @@ module.exports = {
     });
 
     player.currIndex--;
-    player.emit('start', player, queue[player.currIndex]);
+    player.emit('start', queue[player.currIndex]);
 
     interaction.deleteReply();
   }

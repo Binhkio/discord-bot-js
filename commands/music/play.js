@@ -18,7 +18,7 @@ module.exports = {
     async execute(interaction) {
         const url = interaction.options.getString('url');
         const isPlaylist = interaction.options.getBoolean('playlist') || false;
-        const player = interaction.client.player;
+        const player = globalThis.client.player;
         const type = playdl.yt_validate(url);
 
         if (!player.voiceConnection) {
@@ -68,7 +68,7 @@ module.exports = {
             player.currIndex = 0;
             player.channel = interaction.channel;
 
-            player.emit('start', player, player.queue[0]);
+            player.emit('start', player.queue[0]);
         } else {
             // Do nothing
         }

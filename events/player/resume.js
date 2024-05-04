@@ -3,7 +3,8 @@ const { back, skip, loop, pause, stop } = require("../../src/components/button")
 
 module.exports = {
   name: 'resume',
-  async execute(player) {
+  async execute() {
+    const player = globalThis.client.player;
     const currMsg = player.currMsg;
     const embeds = currMsg.embeds;
 

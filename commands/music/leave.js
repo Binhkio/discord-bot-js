@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('disconnect')
+    .setName('leave')
     .setDescription('Disconnect from channel'),
   async execute(interaction) {
     const player = globalThis.client.player;

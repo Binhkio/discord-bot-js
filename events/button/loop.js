@@ -4,7 +4,7 @@ const { back, resume, pause, skip, loop, stop } = require("../../src/components/
 module.exports = {
   name: 'loop',
   async execute({ interaction }) {
-    const player = interaction.client.player;
+    const player = globalThis.client.player;
     const currMsg = player.currMsg;
 
     const embeds = currMsg.embeds;
