@@ -15,6 +15,8 @@ module.exports = {
         player.currIndex = -1;
         player.currMsg = null;
 
+        globalThis.client.player = player;
+
         player.stop();
     },
 };

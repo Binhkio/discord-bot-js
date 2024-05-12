@@ -31,7 +31,10 @@ module.exports = {
             player.queue = [];
         }
 
-        if (type === 'video' || (type === 'playlist' && !isPlaylist && url.includes('watch'))) {
+        if (!type) {
+            await interaction.editReply(`Invalid URL. Please try again!`);
+        }
+        else if (type === 'video' || (type === 'playlist' && !isPlaylist && url.includes('watch'))) {
             const valid_url = url.split('&')[0];
 
             const info = await playdl.video_info(valid_url);
