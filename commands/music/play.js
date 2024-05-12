@@ -31,7 +31,7 @@ module.exports = {
             player.queue = [];
         }
 
-        if (!type) {
+        if (!type || !url.startsWith('https')) {
             await interaction.editReply(`Invalid URL. Please try again!`);
         }
         else if (type === 'video' || (type === 'playlist' && !isPlaylist && url.includes('watch'))) {
@@ -73,7 +73,7 @@ module.exports = {
 
             player.emit('start', player.queue[0]);
         } else {
-            // Do nothing
+            await interaction.editReply(`Something went wrong!!`);
         }
     },
 };
