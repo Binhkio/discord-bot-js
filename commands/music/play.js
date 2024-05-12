@@ -32,7 +32,7 @@ module.exports = {
         }
 
         if (!type || !url.startsWith('https')) {
-            await interaction.editReply(`Invalid URL. Please try again!`);
+            return await interaction.editReply(`Invalid URL. Please try again!`);
         }
         else if (type === 'video' || (type === 'playlist' && !isPlaylist && url.includes('watch'))) {
             const valid_url = url.split('&')[0];
@@ -73,7 +73,7 @@ module.exports = {
 
             player.emit('start', player.queue[0]);
         } else {
-            await interaction.editReply(`Something went wrong!!`);
+            
         }
     },
 };
