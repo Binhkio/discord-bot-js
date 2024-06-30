@@ -9,7 +9,7 @@ module.exports = {
 			const command = interaction.client.commands.get(interaction.commandName);
 
 			if (!command) {
-				interaction.editReply(`❌ | No command matching ${interaction.commandName} was found.`);
+				await interaction.editReply(`❌ | No command matching ${interaction.commandName} was found.`);
 				return;
 			}
 

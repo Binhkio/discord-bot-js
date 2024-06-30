@@ -25,18 +25,18 @@ const pause = new ButtonBuilder()
     .setCustomId(JSON.stringify({ ffb: 'pause' }))
     .setStyle('Secondary')
 
-const methods = ['Không lặp', 'Lặp đơn', 'Lặp tất cả']
-const icons = ['🚫', '🔂', '🔁']
-const loop = (mode) => new ButtonBuilder()
-    .setLabel(methods[mode])
-    .setEmoji(icons[mode])
+const methods = ['No-Loop', 'Loop']
+const icons = ['🚫', '🔁'] //'🔂'
+const loop = (isLoop) => new ButtonBuilder()
+    .setLabel(methods[isLoop ? 1 : 0])
+    .setEmoji(icons[isLoop ? 1 : 0])
     .setCustomId(JSON.stringify({ ffb: 'loop' }))
     .setStyle('Secondary')
 
 const stop = new ButtonBuilder()
     .setLabel('Stop')
     .setEmoji("⛔")
-    .setCustomId(JSON.stringify({ffb: 'stop'}))
+    .setCustomId(JSON.stringify({ ffb: 'stop' }))
     .setStyle('Danger')
 
 module.exports = {

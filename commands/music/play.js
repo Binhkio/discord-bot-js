@@ -1,8 +1,10 @@
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, CommandInteraction } = require("discord.js");
 
 const playdl = require('play-dl');
 const { addEmbed, multiAddEmbed } = require("../../src/components/embed");
-const { joinChannelByInteraction } = require("../../utils/channel");
+const { joinChannelByInteraction, fetchVoiceConnectionByChannel } = require("../../utils/channel");
+const { getPlayerByGuildId, updatePlayerStateByGuildId } = require("../../utils/player");
+const { AudioPlayerStatus } = require("@discordjs/voice");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -15,24 +17,22 @@ module.exports = {
         .addBooleanOption(option => option
             .setName('playlist')
             .setDescription('Type true if it is a playlist\'s url else type false')),
+    /**
+     * @param {CommandInteraction} interaction 
+     */
     async execute(interaction) {
+        const voiceConnection = await fetchVoiceConnectionByChannel(interaction.channel);
+        const player = getPlayerByGuildId(interaction.guildId);
+        voiceConnection.subscribe(player);
+
         const url = interaction.options.getString('url');
         const isPlaylist = interaction.options.getBoolean('playlist') || false;
-        const player = globalThis.client.player;
+
         const type = playdl.yt_validate(url);
-
-        if (!player.voiceConnection) {
-            const newVoiceConnection = await joinChannelByInteraction(interaction);
-            if (!newVoiceConnection) return interaction.editReply({ content: `❌ No voice connection... try again ?`, ephemeral: true });
-
-            newVoiceConnection.subscribe(player);
-            player.voiceConnection = newVoiceConnection;
-            
-            player.queue = [];
-        }
-
         if (!type || !url.startsWith('https')) {
-            return await interaction.editReply(`Invalid URL. Please try again!`);
+            // Can use search
+            await interaction.editReply(`Invalid URL. Please try again!`);
+            return;
         }
         else if (type === 'video' || (type === 'playlist' && !isPlaylist && url.includes('watch'))) {
             const valid_url = url.split('&')[0];
@@ -64,16 +64,14 @@ module.exports = {
                 embeds: [embed],
             });
         }
+        // Save
+        updatePlayerStateByGuildId(interaction.guildId, player);
 
         // Play new audio if player is not playing
         if (!player.isPlaying) {
-            player.isPlaying = true;
-            player.currIndex = 0;
-            player.channel = interaction.channel;
 
-            player.emit('start', player.queue[0]);
         } else {
-            
+
         }
     },
 };

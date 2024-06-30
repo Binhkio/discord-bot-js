@@ -1,24 +1,20 @@
-const { SlashCommandBuilder } = require("discord.js");
-const { joinChannelByInteraction } = require("../../utils/channel");
+const { SlashCommandBuilder, CommandInteraction } = require("discord.js");
+const { fetchVoiceConnectionByChannel } = require("../../utils/channel");
+const { getPlayerByGuildId } = require("../../utils/player");
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('join')
         .setDescription('Join your voice channel'),
+    /**
+     * @param {CommandInteraction} interaction 
+     */
     async execute(interaction) {
-        const player = globalThis.client.player;
+        const guildId = interaction.guildId;
+        const voiceConnection = await fetchVoiceConnectionByChannel(interaction);
+        const player = getPlayerByGuildId(guildId);
+        voiceConnection.subscribe(player);
 
-        if (!player.voiceConnection) {
-            const newVoiceConnection = await joinChannelByInteraction(interaction);
-            if (!newVoiceConnection) return interaction.editReply({ content: `❌ No voice connection... try again ?`, ephemeral: true });
-
-            newVoiceConnection.subscribe(player);
-            player.voiceConnection = newVoiceConnection;
-            
-            player.queue = [];
-            await interaction.editReply(`Joined`);
-        } else {
-            await interaction.editReply(`Already joined...`);
-        }
+        await interaction.editReply("I'm here bro, let's play some musics..");
     },
 };

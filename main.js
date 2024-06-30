@@ -2,13 +2,13 @@ const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const { TOKEN_1, TOKEN_2 } = require('./config.json');
 const fs = require('node:fs');
 const path = require('node:path');
-const { createAudioPlayer } = require('@discordjs/voice');
+const { createAudioPlayer, NoSubscriberBehavior } = require('@discordjs/voice');
 const { keepAlive } = require('./server');
 
 process.on('unhandledRejection', (reason, p) => {
 	console.log("Reason", reason, "Promise", p);
 }).on('uncaughtException', err => {
-	console.error(err);
+	console.log(err, "Error from uncaught exception..");
 	// handleLogError(err);
 });
 
@@ -22,14 +22,8 @@ const client = new Client({
 	]
 });
 
-client.player = createAudioPlayer();
-client.player.queue = [];
-client.player.isPlaying = false;
-client.player.loop = 0; // 0-Disabled | 1-Track | 2-Queue
-client.player.currIndex = -1;
-client.player.currMsg = null;
-client.test = 2002;
-
+// Global variables
+globalThis.guildPlayer = {};
 globalThis.client = client;
 
 /**
@@ -59,24 +53,14 @@ for (const folder of commandFolders) {
 /**
  * Register events
  */
-const commonEventFiles = fs.readdirSync('./events/common').filter(file => file.endsWith('.js'));
-const playerEventFiles = fs.readdirSync('./events/player').filter(file => file.endsWith('.js'));
-
-for (const file of commonEventFiles) {
-	const event = require(`./events/common/${file}`);
+const discordEventFiles = fs.readdirSync('./events/discord').filter(file => file.endsWith('.js'));
+for (const file of discordEventFiles) {
+	const event = require(`./events/discord/${file}`);
 	if (event.once) {
-		client.once(event.name, (...args) => {event.execute(...args)});
+		client.once(event.name, (...args) => { event.execute(...args) });
 	} else {
-		client.on(event.name, (...args) => {event.execute(...args)});
+		client.on(event.name, (...args) => { event.execute(...args) });
 	}
-}
-for (const file of playerEventFiles) {
-	const event = require(`./events/player/${file}`);
-
-	client.player.addListener(event.name, (...args) => {
-		event.execute(...args);
-		console.log(`[${event.name}]`);
-	});
 }
 
 client.login(TOKEN_1 + TOKEN_2);

@@ -1,16 +1,15 @@
 const { getVoiceConnection, joinVoiceChannel, entersState, VoiceConnectionStatus } = require('@discordjs/voice');
-const { CLIENT_ID } = require('../config.json');
+const { TextBasedChannel } = require('discord.js');
 
-async function joinChannelByInteraction(interaction) {
-  if (!interaction.channel || !interaction.guild) return null;
+/**
+ * @param {TextBasedChannel} channel 
+ */
+async function fetchVoiceConnectionByChannel(channel) {
+  const guild = channel.guild;
 
-  const guild = interaction.guild;
-  const channel = guild.members.cache.get(interaction.user.id)?.voice.channel;
-
-  if (!channel) return null;
-  if (channel?.members.get(CLIENT_ID)) {
-    return getVoiceConnection(channel.guildId);
-  }
+  const existVoiceConnection = getVoiceConnection(guild.id);
+  if (existVoiceConnection)
+    return existVoiceConnection;
 
   const initialVoiceConnection = joinVoiceChannel({
     guildId: guild.id,
@@ -20,12 +19,12 @@ async function joinChannelByInteraction(interaction) {
     selfMute: false,
   });
 
-  const voiceConnection = await entersState(initialVoiceConnection, VoiceConnectionStatus.Ready, 5e3);
-  console.log(`[JOIN] ${channel.id}`);
+  await entersState(initialVoiceConnection, VoiceConnectionStatus.Ready, 5e3);
+  console.log(`[JOIN] [Guild: ${guild.id}] [Channel: ${channel.id}]`);
 
-  return voiceConnection;
+  return initialVoiceConnection;
 }
 
 module.exports = {
-  joinChannelByInteraction,
+  fetchVoiceConnectionByChannel,
 }
