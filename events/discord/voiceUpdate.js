@@ -6,7 +6,7 @@ const { textToSpeech } = require("../../utils/tts");
 module.exports = {
     name: Events.VoiceStateUpdate,
     once: false,
-    execute(oldState, newState) {
+    async execute(oldState, newState) {
         const oldChannel = oldState?.channel;
         const newChannel = newState?.channel;
 
@@ -15,11 +15,11 @@ module.exports = {
             const currHour = new Date().getHours();
             const greet = currHour < 12 ? "sáng" : (currHour < 19 ? "chiều" : "tối");
             const fullGreeting = `Chào buổi ${greet}, ${newState.member.nickname || newState.member.user.globalName}`;
-            textToSpeech(fullGreeting);
+            await textToSpeech(fullGreeting);
         }
         if (oldChannel?.members?.has(global.client.user.id) && !newChannel?.members?.has(global.client.user.id)) {
             const fullGoodbye = `Tạm biệt ${newState.member.nickname || newState.member.user.globalName}`;
-            textToSpeech(fullGoodbye);
+            await textToSpeech(fullGoodbye);
         }
 
         if (oldChannel && !newChannel) {
