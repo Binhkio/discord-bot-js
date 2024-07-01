@@ -24,6 +24,11 @@ module.exports = {
             const newVoiceConnection = await createNewVoiceConnectionFromInteraction(interaction);
             player.subscription = newVoiceConnection.subscribe(player);
             player.voiceConnection = newVoiceConnection;
+
+            const currHour = new Date().getHours();
+            const greet = currHour < 12 ? "sáng" : (currHour < 19 ? "chiều" : "tối");
+            const fullGreeting = `Chào buổi ${greet} cả nhà`;
+            await textToSpeech(fullGreeting);
         }
 
         const url = interaction.options.getString('url');

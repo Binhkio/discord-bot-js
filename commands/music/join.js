@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, CommandInteraction } = require("discord.js");
 const { createNewVoiceConnectionFromInteraction } = require("../../utils/channel");
+const { textToSpeech } = require("../../utils/tts");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -15,7 +16,13 @@ module.exports = {
             const newVoiceConnection = await createNewVoiceConnectionFromInteraction(interaction);
             player.subscription = newVoiceConnection.subscribe(player);
             player.voiceConnection = newVoiceConnection;
+            
+            const currHour = new Date().getHours();
+            const greet = currHour < 12 ? "sáng" : (currHour < 19 ? "chiều" : "tối");
+            const fullGreeting = `Chào buổi ${greet} cả nhà`;
+            await textToSpeech(fullGreeting);
         }
+
 
         await interaction.editReply("I'm here bro, let's play some musics..");
     },
