@@ -60,6 +60,8 @@ for (const folder of commandFolders) {
 		} else {
 			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
 		}
+
+		delete require.cache[require.resolve(filePath)];
 	}
 }
 
@@ -82,6 +84,8 @@ for (const file of discordEventFiles) {
 			event.execute(...args)
 		});
 	}
+
+	delete require.cache[require.resolve(`./events/discord/${file}`)];
 }
 for (const file of playerEventFiles) {
 	const event = require(`./events/player/${file}`);
@@ -90,6 +94,8 @@ for (const file of playerEventFiles) {
 		console.log(`[${new Date().toLocaleString()}] [Event] [${event.name.toUpperCase()}]`);
 		event.execute(...args);
 	});
+
+	delete require.cache[require.resolve(`./events/player/${file}`)];
 }
 
 client.login(TOKEN_1 + TOKEN_2);
