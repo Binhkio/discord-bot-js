@@ -2,6 +2,7 @@ const { SlashCommandBuilder, CommandInteraction } = require("discord.js");
 const { addEmbed, multiAddEmbed } = require("../../components/embed");
 const { createNewVoiceConnectionFromInteraction } = require("../../utils/channel");
 const playdl = require('play-dl');
+const { textToSpeech } = require("../../utils/tts");
 
 module.exports = {
     data: new SlashCommandBuilder()
