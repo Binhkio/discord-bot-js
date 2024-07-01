@@ -1,25 +1,41 @@
 const { Events } = require("discord.js");
 
 const { getVoiceConnection } = require("@discordjs/voice");
+const { textToSpeech } = require("../../utils/tts");
 
 module.exports = {
     name: Events.VoiceStateUpdate,
     once: false,
     execute(oldState, newState) {
-        const voiceChannel = oldState.channel;
-        if (!voiceChannel) return;
+        const oldChannel = oldState?.channel;
+        const newChannel = newState?.channel;
 
-        const members = voiceChannel.members.size;
-        if (members === 1 && voiceChannel.members.has(global.client.user.id)) {
-            const player = global.client.player;
-
-            if (player.isPlaying) {
-                player.emit('stop');
-            }
-
-            setTimeout(() => {
-                player.voiceConnection.destroy();
-            }, 1000 * 5);
+        if (!oldChannel?.members?.has(global.client.user.id) && newChannel?.members?.has(global.client.user.id)) {
+            // Someone join the channel where bot is staying in
+            const currHour = new Date().getHours();
+            const greet = currHour < 12 ? "sáng" : (currHour < 19 ? "chiều" : "tối");
+            const fullGreeting = `Chào buổi ${greet}, ${newState.member.nickname || newState.member.user.globalName}`;
+            textToSpeech(fullGreeting);
         }
+        if (oldChannel?.members?.has(global.client.user.id) && !newChannel?.members?.has(global.client.user.id)) {
+            const fullGoodbye = `Tạm biệt ${newState.member.nickname || newState.member.user.globalName}`;
+            textToSpeech(fullGoodbye);
+        }
+
+        if (oldChannel && !newChannel) {
+            const members = oldChannel.members.size;
+            if (members === 1 && oldChannel.members.has(global.client.user.id)) {
+                const player = global.client.player;
+    
+                if (player.isPlaying) {
+                    player.emit('stop');
+                }
+    
+                setTimeout(() => {
+                    player.voiceConnection.destroy();
+                }, 1000 * 5);
+            }
+        }
+
     },
 };

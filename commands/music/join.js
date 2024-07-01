@@ -13,7 +13,7 @@ module.exports = {
 
         if (!player.voiceConnection) {
             const newVoiceConnection = await createNewVoiceConnectionFromInteraction(interaction);
-            newVoiceConnection.subscribe(player);
+            player.subscription = newVoiceConnection.subscribe(player);
             player.voiceConnection = newVoiceConnection;
         }
 

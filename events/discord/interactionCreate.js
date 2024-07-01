@@ -14,7 +14,7 @@ module.exports = {
 			}
 
 			try {
-				console.log(`[${new Date().toLocaleString('vn-VN')}] [Command] [${interaction.commandName.toUpperCase()}]`);
+				console.log(`[${new Date().toLocaleString()}] [Command] [${interaction.commandName.toUpperCase()}]`);
 				await command.execute(interaction);
 			} catch (error) {
 				console.error(error);
@@ -31,7 +31,7 @@ module.exports = {
 			if (fileBtn) {
 				const btn = require(`../button/${fileBtn}.js`);
 				if (btn) {
-					console.log(`[${new Date().toLocaleString('vn-VN')}] [Button] [${btn.name.toUpperCase()}]`);
+					console.log(`[${new Date().toLocaleString()}] [Button] [${btn.name.toUpperCase()}]`);
 					return btn.execute({ interaction, customId });
 				}
 			}

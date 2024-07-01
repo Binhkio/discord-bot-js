@@ -73,12 +73,12 @@ for (const file of discordEventFiles) {
 	const event = require(`./events/discord/${file}`);
 	if (event.once) {
 		client.once(event.name, (...args) => {
-			console.log(`[${new Date().toLocaleString('vn-VN')}] [Discord] [${event.name}]`);
+			console.log(`[${new Date().toLocaleString()}] [Discord] [${event.name}]`);
 			event.execute(...args)
 		});
 	} else {
 		client.on(event.name, (...args) => {
-			console.log(`[${new Date().toLocaleString('vn-VN')}] [Discord] [${event.name}]`);
+			console.log(`[${new Date().toLocaleString()}] [Discord] [${event.name}]`);
 			event.execute(...args)
 		});
 	}
@@ -87,7 +87,7 @@ for (const file of playerEventFiles) {
 	const event = require(`./events/player/${file}`);
 
 	client.player.addListener(event.name, (...args) => {
-		console.log(`[${new Date().toLocaleString('vn-VN')}] [Event] [${event.name.toUpperCase()}]`);
+		console.log(`[${new Date().toLocaleString()}] [Event] [${event.name.toUpperCase()}]`);
 		event.execute(...args);
 	});
 }
