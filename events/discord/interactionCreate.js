@@ -14,8 +14,8 @@ module.exports = {
 			}
 
 			try {
+				console.log(`[${new Date().toLocaleString('vn-VN')}] [Command] [${interaction.commandName.toUpperCase()}]`);
 				await command.execute(interaction);
-				console.log(`[${interaction.commandName}]`);
 			} catch (error) {
 				console.error(error);
 				await interaction.editReply({
@@ -30,7 +30,10 @@ module.exports = {
 			const fileBtn = customId.ffb;
 			if (fileBtn) {
 				const btn = require(`../button/${fileBtn}.js`);
-				if (btn) return btn.execute({ interaction, customId });
+				if (btn) {
+					console.log(`[${new Date().toLocaleString('vn-VN')}] [Button] [${btn.name.toUpperCase()}]`);
+					return btn.execute({ interaction, customId });
+				}
 			}
 		}
 	},

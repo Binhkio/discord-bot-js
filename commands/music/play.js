@@ -1,10 +1,7 @@
 const { SlashCommandBuilder, CommandInteraction } = require("discord.js");
-
+const { addEmbed, multiAddEmbed } = require("../../components/embed");
+const { createNewVoiceConnectionFromInteraction } = require("../../utils/channel");
 const playdl = require('play-dl');
-const { addEmbed, multiAddEmbed } = require("../../src/components/embed");
-const { joinChannelByInteraction, fetchVoiceConnectionByChannel } = require("../../utils/channel");
-const { getPlayerByGuildId, updatePlayerStateByGuildId } = require("../../utils/player");
-const { AudioPlayerStatus } = require("@discordjs/voice");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -21,9 +18,13 @@ module.exports = {
      * @param {CommandInteraction} interaction 
      */
     async execute(interaction) {
-        const voiceConnection = await fetchVoiceConnectionByChannel(interaction.channel);
-        const player = getPlayerByGuildId(interaction.guildId);
-        voiceConnection.subscribe(player);
+        const player = global.client.player;
+
+        if (!player.voiceConnection) {
+            const newVoiceConnection = await createNewVoiceConnectionFromInteraction(interaction);
+            newVoiceConnection.subscribe(player);
+            player.voiceConnection = newVoiceConnection;
+        }
 
         const url = interaction.options.getString('url');
         const isPlaylist = interaction.options.getBoolean('playlist') || false;
@@ -64,12 +65,13 @@ module.exports = {
                 embeds: [embed],
             });
         }
+
         // Save
-        updatePlayerStateByGuildId(interaction.guildId, player);
+        player.channel = interaction.channel;
 
         // Play new audio if player is not playing
         if (!player.isPlaying) {
-
+            player.emit('skip');
         } else {
 
         }

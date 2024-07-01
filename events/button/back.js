@@ -1,10 +1,10 @@
-const { endedEmbed } = require("../../src/components/embed");
-const { getPlayerByGuildId } = require("../../utils/player");
+const { endedEmbed } = require("../../components/embed");
+
 
 module.exports = {
   name: 'back',
   async execute({ interaction }) {
-    // const player = getPlayerByGuildId(interaction.guildId);
+    // const player = global.client.player;
     // const queue = player.queue;
     // const currMsg = player.currMsg;
 

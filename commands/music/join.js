@@ -1,6 +1,5 @@
 const { SlashCommandBuilder, CommandInteraction } = require("discord.js");
-const { fetchVoiceConnectionByChannel } = require("../../utils/channel");
-const { getPlayerByGuildId } = require("../../utils/player");
+const { createNewVoiceConnectionFromInteraction } = require("../../utils/channel");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -10,10 +9,13 @@ module.exports = {
      * @param {CommandInteraction} interaction 
      */
     async execute(interaction) {
-        const guildId = interaction.guildId;
-        const voiceConnection = await fetchVoiceConnectionByChannel(interaction);
-        const player = getPlayerByGuildId(guildId);
-        voiceConnection.subscribe(player);
+        const player = global.client.player;
+
+        if (!player.voiceConnection) {
+            const newVoiceConnection = await createNewVoiceConnectionFromInteraction(interaction);
+            newVoiceConnection.subscribe(player);
+            player.voiceConnection = newVoiceConnection;
+        }
 
         await interaction.editReply("I'm here bro, let's play some musics..");
     },

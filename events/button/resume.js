@@ -1,14 +1,14 @@
-const { getPlayerByGuildId } = require("../../utils/player");
+
 
 module.exports = {
   name: 'resume',
   async execute({ interaction }) {
-    const player = getPlayerByGuildId(interaction.guildId);
+    const player = global.client.player;
 
     if (!player.isPlaying)
       return interaction.editReply({ content: `No music currently playing... try again ? ❌`, ephemeral: true });
 
-    player.emit('resume', interaction.guildId);
+    player.emit('resume');
 
     interaction.deleteReply();
   },

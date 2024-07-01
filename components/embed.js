@@ -1,4 +1,5 @@
-const { EmbedBuilder } = require("discord.js")
+const { EmbedBuilder, userMention } = require("discord.js")
+const progressBar = require("../utils/progressBar")
 
 const playEmbed = (queue, track) => new EmbedBuilder()
     .setAuthor({
@@ -12,9 +13,9 @@ const playEmbed = (queue, track) => new EmbedBuilder()
     .setImage(track?.thumbnails[0]?.url)
     .setURL(track?.url)
     .addFields({ name: '🪪 Nguồn', value: `\`${track?.channel?.name}\``, inline: true })
-    .addFields({ name: '🏷️ Người thêm', value: `\`${track?.user?.username}\``, inline: true })
     .addFields({ name: '🕖 Thời lượng', value: `\`${track?.durationRaw}\``, inline: true })
     .addFields({ name: '💽 Hàng chờ', value: `\`${queue?.length}\``, inline: true })
+    .addFields({ name: '🏷️ Người thêm', value: userMention(track?.user?.id), inline: true })
     .setTimestamp()
     .setFooter({ text: "_Developed by Binhkio_" })
 
@@ -42,15 +43,15 @@ const addEmbed = (queue, track) => new EmbedBuilder()
     .setColor('Green')
     .setURL(track?.url)
     .addFields({ name: '🪪 Nguồn', value: `\`${track?.channel?.name}\``, inline: true })
-    .addFields({ name: '🏷️ Người thêm', value: `\`${track?.user?.username}\``, inline: true })
     .addFields({ name: '🕖 Thời lượng', value: `\`${track?.durationRaw}\``, inline: true })
-    .addFields({ name: '💽 Danh sách', value: `\`${queue?.length}\``, inline: true })
+    .addFields({ name: '💽 Hàng chờ', value: `\`${queue?.length}\``, inline: true })
+    .addFields({ name: '🏷️ Người thêm', value: userMention(track?.user?.id), inline: true })
     .setTimestamp()
     .setFooter({ text: `_Developed by Binhkio_` })
 
 const multiAddEmbed = (queue, info, tracks) => new EmbedBuilder()
     .setAuthor({
-        name: "✅ THÊM DANH SÁCH NHẠC",
+        name: "✅ THÊM Hàng chờ NHẠC",
         iconURL: tracks[0]?.user?.avatarURL({ extension: "png" }) || undefined,
     })
     .setTitle('💽 ' + info?.title
@@ -59,9 +60,9 @@ const multiAddEmbed = (queue, info, tracks) => new EmbedBuilder()
     .setColor('Green')
     .setURL(info?.url || "")
     .addFields({ name: '🪪 Nguồn', value: `\`${info?.channel?.name}\``, inline: true })
-    .addFields({ name: '🏷️ Người thêm', value: `\`${tracks[0]?.user?.username}\``, inline: true })
     .addFields({ name: '🎟️ Số lượng', value: `\`${tracks?.length} bài\``, inline: true })
-    .addFields({ name: '💽 Danh sách', value: `\`${queue?.length}\``, inline: true })
+    .addFields({ name: '💽 Hàng chờ', value: `\`${queue?.length}\``, inline: true })
+    .addFields({ name: '🏷️ Người thêm', value: userMention(track[0]?.user?.id), inline: true })
     .setTimestamp()
     .setFooter({ text: `_Developed by Binhkio_` })
 

@@ -1,8 +1,9 @@
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
-const { TOKEN_1, TOKEN_2 } = require('./config.json');
+const { TOKEN_1, TOKEN_2 } = require('./config');
 const fs = require('node:fs');
 const path = require('node:path');
-const { createAudioPlayer, NoSubscriberBehavior } = require('@discordjs/voice');
+const { createAudioPlayer, NoSubscriberBehavior, generateDependencyReport } = require('@discordjs/voice');
+
 const { keepAlive } = require('./server');
 
 process.on('unhandledRejection', (reason, p) => {
@@ -11,6 +12,8 @@ process.on('unhandledRejection', (reason, p) => {
 	console.log(err, "Error from uncaught exception..");
 	// handleLogError(err);
 });
+
+console.log(generateDependencyReport());
 
 keepAlive();
 
@@ -22,8 +25,19 @@ const client = new Client({
 	]
 });
 
+client.player = createAudioPlayer({
+	behaviors: {
+		noSubscriber: NoSubscriberBehavior.Play,
+    },
+});
+
+client.player.queue = [];  // Array of Tracks
+client.player.prevQueue = [];
+client.player.isPlaying = false;
+client.player.isLoop = false;
+client.player.currMsg = null;
+
 // Global variables
-globalThis.guildPlayer = {};
 globalThis.client = client;
 
 /**
@@ -43,7 +57,6 @@ for (const folder of commandFolders) {
 		const command = require(filePath);
 		if ('data' in command && 'execute' in command) {
 			client.commands.set(command.data.name, command);
-			console.log(`[SUCCESS] Command: ${command.data.name}`);
 		} else {
 			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
 		}
@@ -54,13 +67,29 @@ for (const folder of commandFolders) {
  * Register events
  */
 const discordEventFiles = fs.readdirSync('./events/discord').filter(file => file.endsWith('.js'));
+const playerEventFiles = fs.readdirSync('./events/player').filter(file => file.endsWith('.js'));
+
 for (const file of discordEventFiles) {
 	const event = require(`./events/discord/${file}`);
 	if (event.once) {
-		client.once(event.name, (...args) => { event.execute(...args) });
+		client.once(event.name, (...args) => {
+			console.log(`[${new Date().toLocaleString('vn-VN')}] [Discord] [${event.name}]`);
+			event.execute(...args)
+		});
 	} else {
-		client.on(event.name, (...args) => { event.execute(...args) });
+		client.on(event.name, (...args) => {
+			console.log(`[${new Date().toLocaleString('vn-VN')}] [Discord] [${event.name}]`);
+			event.execute(...args)
+		});
 	}
+}
+for (const file of playerEventFiles) {
+	const event = require(`./events/player/${file}`);
+
+	client.player.addListener(event.name, (...args) => {
+		console.log(`[${new Date().toLocaleString('vn-VN')}] [Event] [${event.name.toUpperCase()}]`);
+		event.execute(...args);
+	});
 }
 
 client.login(TOKEN_1 + TOKEN_2);

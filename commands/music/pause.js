@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, CommandInteraction } = require("discord.js");
-const { getPlayerByGuildId } = require("../../utils/player");
+
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -11,7 +11,7 @@ module.exports = {
    * @returns 
    */
   async execute(interaction) {
-    const player = getPlayerByGuildId(interaction.guildId);
+    const player = global.client.player;
 
     if (!player.isPlaying)
       return interaction.editReply({ content: `No music currently playing... try again ? ❌`, ephemeral: true });

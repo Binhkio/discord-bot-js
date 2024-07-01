@@ -1,3 +1,3 @@
-# discord-bot-ts-v2
+# discord-bot-js
 
-- Track [https://www.youtube.com/watch?v=gOERsP9LUI4]
+- Update v1.3.0, still getting error

@@ -1,26 +1,29 @@
-const { endedEmbed } = require("../../src/components/embed");
-const { getPlayerByGuildId, updatePlayerStateByGuildId } = require("../../utils/player");
+const { endedEmbed } = require("../../components/embed");
 
 module.exports = {
   name: 'skip',
-  async execute(guildId) {
-    const player = getPlayerByGuildId(guildId);
-    const embed = endedEmbed(player.currTrack);
-
-    await player?.currMsg?.edit({
-      embeds: [embed],
-      components: [],
-    });
+  async execute() {
+    const player = global.client.player;
+    
+    if (player?.currMsg) {
+      const embed = endedEmbed(player.currTrack);
+      await player.currMsg.edit({
+        embeds: [embed],
+        components: [],
+      });
+    }
     player.currMsg = null;
 
-    // Queue is not clear
-    if (player.queue.length > 0) {
-      if (!player.loop) {
+    if (!player.isLoop) { // Queue is not loop
+      if (player.queue.length > 0) { // Queue is not clear
         player.currTrack = player.queue.shift();
+        player.emit('start');
+      } else { // Queue is clear
+        player.emit('stop');
       }
-      updatePlayerStateByGuildId(guildId);
-      player.emit('start', guildId);
+    } else { // Queue is loop
+      player.currTrack = player.queue.shift();
+      player.emit('start');
     }
-
   },
 };

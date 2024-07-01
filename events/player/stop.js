@@ -1,22 +1,23 @@
-const { endedEmbed } = require("../../src/components/embed");
-const { getPlayerByGuildId, updatePlayerStateByGuildId } = require("../../utils/player");
+const { getVoiceConnection } = require("@discordjs/voice");
+const { endedEmbed } = require("../../components/embed");
 
 module.exports = {
     name: 'stop',
-    async execute(guildId) {
-        const player = getPlayerByGuildId(guildId);
-        const embed = endedEmbed(player.currTrack);
-
-        await player?.currMsg?.edit({
-            embeds: [embed],
-            components: [],
-        });
+    async execute() {
+        const player = global.client.player;
+        
+        if (player?.currMsg) {
+            const embed = endedEmbed(player.currTrack);
+            await player.currMsg.edit({
+                embeds: [embed],
+                components: [],
+            });
+        }
 
         player.isPlaying = false;
         player.queue = [];
         player.currMsg = null;
 
         player.stop();
-        updatePlayerStateByGuildId(guildId);
     },
 };

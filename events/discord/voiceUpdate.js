@@ -1,5 +1,5 @@
 const { Events } = require("discord.js");
-const { getPlayerByGuildId } = require("../../utils/player");
+
 const { getVoiceConnection } = require("@discordjs/voice");
 
 module.exports = {
@@ -10,15 +10,16 @@ module.exports = {
         if (!voiceChannel) return;
 
         const members = voiceChannel.members.size;
-        if (members === 1 && voiceChannel.members.has(globalThis.client.user.id)) {
-            const player = getPlayerByGuildId(oldState.guildId);
+        if (members === 1 && voiceChannel.members.has(global.client.user.id)) {
+            const player = global.client.player;
 
             if (player.isPlaying) {
                 player.emit('stop');
             }
 
-            const voiceConnection = getVoiceConnection(oldState.guildId);
-            voiceConnection.destroy();
+            setTimeout(() => {
+                player.voiceConnection.destroy();
+            }, 1000 * 5);
         }
     },
 };

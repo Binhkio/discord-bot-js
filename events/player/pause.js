@@ -1,15 +1,14 @@
 const { ActionRowBuilder } = require("discord.js");
-const { back, resume, skip, loop, stop } = require("../../src/components/button");
-const { getPlayerByGuildId, updatePlayerStateByGuildId } = require("../../utils/player");
+const { back, resume, skip, isLoop, stop } = require("../../components/button");
 
 module.exports = {
   name: 'pause',
-  async execute(guildId) {
-    const player = getPlayerByGuildId(guildId);
+  async execute() {
+    const player = global.client.player;
     const currMsg = player.currMsg;
     const embeds = currMsg.embeds;
 
-    const row1 = new ActionRowBuilder().addComponents(resume, skip, loop(player.loop), stop);
+    const row1 = new ActionRowBuilder().addComponents(resume, skip, stop);
 
     player.currMsg.edit({
       embeds,
@@ -18,6 +17,5 @@ module.exports = {
 
     player.pause();
 
-    updatePlayerStateByGuildId(guildId);
   },
 };
