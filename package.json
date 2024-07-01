@@ -4,9 +4,9 @@
   "description": "Discord Music Bot",
   "main": "main.js",
   "scripts": {
-    "start": "node main.js",
+    "start": "bun main.js",
     "dev": "nodemon main.js",
-    "cmd": "node deploy-commands.js"
+    "cmd": "bun deploy-commands.js"
   },
   "author": "Binhkio",
   "license": "ISC",

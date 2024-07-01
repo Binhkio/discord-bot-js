@@ -17,7 +17,7 @@ module.exports = {
             player.subscription = newVoiceConnection.subscribe(player);
             player.voiceConnection = newVoiceConnection;
             
-            const currHour = new Date().getHours();
+            const currHour = new Date(new Date().getTime() + 7*60*60*1000).getHours();
             const greet = currHour < 12 ? "sáng" : (currHour < 19 ? "chiều" : "tối");
             const fullGreeting = `Chào buổi ${greet} cả nhà`;
             textToSpeech(fullGreeting);

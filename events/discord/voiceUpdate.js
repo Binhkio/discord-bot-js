@@ -12,7 +12,7 @@ module.exports = {
 
         if (!oldChannel?.members?.has(global.client.user.id) && newChannel?.members?.has(global.client.user.id)) {
             // Someone join the channel where bot is staying in
-            const currHour = new Date().getHours();
+            const currHour = new Date(new Date().getTime() + 7*60*60*1000).getHours();
             const greet = currHour < 12 ? "sáng" : (currHour < 19 ? "chiều" : "tối");
             const fullGreeting = `Chào buổi ${greet}, ${newState.member.nickname || newState.member.user.globalName}`;
             await textToSpeech(fullGreeting);

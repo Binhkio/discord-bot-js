@@ -5,6 +5,7 @@ const { createAudioResource, AudioPlayerStatus, StreamType } = require("@discord
 
 const playdl = require("play-dl");
 const ytdl = require("ytdl-core");
+const { YOUTUBE_COOKIE } = require("../../config");
 
 // Start a new track
 module.exports = {
@@ -26,6 +27,11 @@ module.exports = {
             filter: "audioonly",
             quality: "lowestaudio",
             liveBuffer: 0,
+            requestOptions: {
+                headers: {
+                    'Cookie': YOUTUBE_COOKIE,
+                }
+            }
         });
         if (!stream) throw new Error("No stream found");
         const resource = createAudioResource(stream, {
