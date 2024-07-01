@@ -33,7 +33,9 @@ module.exports = {
     
                 setTimeout(() => {
                     player.voiceConnection.destroy();
-                }, 1000 * 5);
+                    player.voiceConnection = undefined;
+                    player.subscription = undefined;
+                }, 1000 * 2);
             }
         }
 

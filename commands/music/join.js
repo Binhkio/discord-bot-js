@@ -20,7 +20,7 @@ module.exports = {
             const currHour = new Date().getHours();
             const greet = currHour < 12 ? "sáng" : (currHour < 19 ? "chiều" : "tối");
             const fullGreeting = `Chào buổi ${greet} cả nhà`;
-            await textToSpeech(fullGreeting);
+            textToSpeech(fullGreeting);
         }
 
 
