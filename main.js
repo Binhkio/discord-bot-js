@@ -7,10 +7,17 @@ const { createAudioPlayer, NoSubscriberBehavior, generateDependencyReport } = re
 const { keepAlive } = require('./server');
 
 process.on('unhandledRejection', (reason, p) => {
+	const channel = client.player.channel;
 	console.log("Reason", reason, "Promise", p);
+	if (channel) {
+		channel.send(`**${reason}**\n${p}`);
+	}
 }).on('uncaughtException', err => {
+	const channel = client.player.channel;
 	console.log(err, "Error from uncaught exception..");
-	// handleLogError(err);
+	if (channel) {
+		channel.send(`**Error from uncaught exception**\n${err}`);
+	}
 });
 
 console.log(generateDependencyReport());
