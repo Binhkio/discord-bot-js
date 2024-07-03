@@ -1,11 +1,15 @@
-const { SlashCommandBuilder, CommandInteraction } = require("discord.js");
+const { SlashCommandBuilder, CommandInteraction, userMention } = require("discord.js");
 const { createNewVoiceConnectionFromInteraction } = require("../../utils/channel");
 const { textToSpeech } = require("../../utils/tts");
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('join')
-        .setDescription('Join your voice channel'),
+        .setName('say')
+        .setDescription('Say something..')
+        .addStringOption(option => option
+            .setName('content')
+            .setDescription('What you want to say?')
+            .setRequired(true)),
     /**
      * @param {CommandInteraction} interaction 
      */
@@ -24,7 +28,12 @@ module.exports = {
             textToSpeech(fullGreeting);
         }
 
+        const content = interaction.options.getString('content');
 
-        await interaction.editReply("I'm here bro, let's play some musics..");
+        if (!content) await interaction.editReply("Nothing to say");
+
+        textToSpeech(content);
+
+        await interaction.editReply(`${userMention(interaction.user.id)}\n${content}`);
     },
 };

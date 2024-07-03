@@ -20,6 +20,7 @@ module.exports = {
      */
     async execute(interaction) {
         const player = global.client.player;
+        player.channel = interaction.channel;
 
         if (!player.voiceConnection) {
             const newVoiceConnection = await createNewVoiceConnectionFromInteraction(interaction);
@@ -71,9 +72,6 @@ module.exports = {
                 embeds: [embed],
             });
         }
-
-        // Save
-        player.channel = interaction.channel;
 
         // Play new audio if player is not playing
         if (!player.isPlaying) {
