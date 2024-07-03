@@ -23,10 +23,15 @@ module.exports = {
         }).then(msg => player.currMsg = msg);
 
         console.log(`=> Playing ${player.currTrack.url}`);
+
+        // const { stream } = playdl.stream(player.currTrack.url);
+        
         const stream = ytdl(player.currTrack.url, {
             filter: "audioonly",
             quality: "lowestaudio",
-            liveBuffer: 0,
+            liveBuffer: 1 << 62,
+            highWaterMark: 1 << 62,
+            dlChunkSize: 0,
             requestOptions: {
                 headers: {
                     'Cookie': YOUTUBE_COOKIE,

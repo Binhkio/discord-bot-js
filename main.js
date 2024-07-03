@@ -80,7 +80,7 @@ for (const file of discordEventFiles) {
 		});
 	} else {
 		client.on(event.name, (...args) => {
-			console.log(`[${new Date().toLocaleString()}] [Discord] [${event.name}]`);
+			// console.log(`[${new Date().toLocaleString()}] [Discord] [${event.name}]`);
 			event.execute(...args)
 		});
 	}

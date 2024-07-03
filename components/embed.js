@@ -62,7 +62,7 @@ const multiAddEmbed = (queue, info, tracks) => new EmbedBuilder()
     .addFields({ name: '🪪 Nguồn', value: `\`${info?.channel?.name}\``, inline: true })
     .addFields({ name: '🎟️ Số lượng', value: `\`${tracks?.length} bài\``, inline: true })
     .addFields({ name: '💽 Hàng chờ', value: `\`${queue?.length}\``, inline: true })
-    .addFields({ name: '🏷️ Người thêm', value: userMention(track[0]?.user?.id), inline: true })
+    .addFields({ name: '🏷️ Người thêm', value: userMention(tracks[0]?.user?.id), inline: true })
     .setTimestamp()
     .setFooter({ text: `_Developed by Binhkio_` })
 

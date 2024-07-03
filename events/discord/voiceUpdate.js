@@ -1,6 +1,4 @@
 const { Events } = require("discord.js");
-
-const { getVoiceConnection } = require("@discordjs/voice");
 const { textToSpeech } = require("../../utils/tts");
 
 module.exports = {
