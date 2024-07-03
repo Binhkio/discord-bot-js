@@ -34,6 +34,6 @@ module.exports = {
 
         textToSpeech(content);
 
-        await interaction.editReply(`${userMention(interaction.user.id)}\n${content}`);
+        await interaction.editReply(content);
     },
 };
