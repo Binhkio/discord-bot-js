@@ -1,24 +1,52 @@
 const { createAudioPlayer, createAudioResource, AudioPlayerStatus } = require("@discordjs/voice");
 const { default: axios } = require("axios");
 const { Readable } = require("stream");
-const { getAudioUrl } = require("google-tts-api");
+const { getAudioUrl, getAllAudioUrls } = require("google-tts-api");
 
+/**
+ * 
+ * @param {string} message 
+ */
 async function textToSpeech(message) {
-    const voiceURL = getAudioUrl(message, {
-        lang: 'vi',
-        slow: false,
-        host: 'https://translate.google.com',
-    });
+    let voiceData;
 
-    const { data } = await axios.get(voiceURL, {
-        responseType: 'arraybuffer',
-        headers: {
-            "Content-Type": 'audio/mpeg'
-        }
-    })
+    if (message.length < 200) {
+        const voiceURL = getAudioUrl(message, {
+            lang: 'vi',
+            slow: false,
+            host: 'https://translate.google.com',
+        });
+
+        const { data } = await axios.get(voiceURL, {
+            responseType: 'arraybuffer',
+            headers: {
+                "Content-Type": 'audio/mpeg'
+            }
+        });
+
+        voiceData = data;
+    } else {
+        const voiceURLs = getAllAudioUrls(message, {
+            lang: 'vi',
+            slow: false,
+            host: 'https://translate.google.com',
+        });
+        
+        const data = await Promise.all(voiceURLs.map(async (val) => {
+            const { data } = await axios.get(val.url, {
+                responseType: 'arraybuffer',
+                headers: {
+                    "Content-Type": 'audio/mpeg'
+                }
+            })
+            return Promise.resolve(data);
+        }));
+
+        voiceData = data;
+    }
 
     const ttsPlayer = createAudioPlayer();
-    const streamData = Readable.from(data);
+    const streamData = Readable.from(voiceData);
     const resource = createAudioResource(streamData);
     ttsPlayer.play(resource);
     
