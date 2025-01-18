@@ -1,18 +1,18 @@
-const express = require("express");
+const express = require('express');
 
 const app = express();
 const PORT = 3000;
 
-app.get("/", (req, res) => {
-  res.send("Bot still alive");
+app.get('/', (req, res) => {
+    res.send('Bot still alive');
 });
 
 function keepAlive() {
-  app.listen(PORT, () => {
-    console.log(`App is listening on port ${PORT}`);
-  });
+    app.listen(PORT, () => {
+        console.log(`App is listening on port ${PORT}`);
+    });
 }
 
 module.exports = {
-  keepAlive,
+    keepAlive,
 };

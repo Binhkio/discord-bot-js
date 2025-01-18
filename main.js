@@ -1,47 +1,47 @@
-const { Client, GatewayIntentBits, Collection } = require("discord.js");
-const { TOKEN_1, TOKEN_2 } = require("./config");
-const fs = require("node:fs");
-const path = require("node:path");
+const { Client, GatewayIntentBits, Collection } = require('discord.js');
+const { TOKEN_1, TOKEN_2 } = require('./config');
+const fs = require('node:fs');
+const path = require('node:path');
 const {
-  createAudioPlayer,
-  NoSubscriberBehavior,
-  generateDependencyReport,
-} = require("@discordjs/voice");
+    createAudioPlayer,
+    NoSubscriberBehavior,
+    generateDependencyReport,
+} = require('@discordjs/voice');
 
-const { keepAlive } = require("./server");
+const { keepAlive } = require('./server');
 
 process
-  .on("unhandledRejection", (reason, p) => {
-    const channel = client.player.channel;
-    console.log("Reason", reason, "Promise", p);
-    if (channel) {
-      channel.send(`**${reason}**\n${p}`);
-    }
-  })
-  .on("uncaughtException", (err) => {
-    const channel = client.player.channel;
-    console.log(err, "Error from uncaught exception..");
-    if (channel) {
-      channel.send(`**Error from uncaught exception**\n${err}`);
-    }
-  });
+    .on('unhandledRejection', (reason, p) => {
+        const channel = client.player.channel;
+        console.log('Reason', reason, 'Promise', p);
+        if (channel) {
+            channel.send(`**${reason}**\n${p}`);
+        }
+    })
+    .on('uncaughtException', (err) => {
+        const channel = client.player.channel;
+        console.log(err, 'Error from uncaught exception..');
+        if (channel) {
+            channel.send(`**Error from uncaught exception**\n${err}`);
+        }
+    });
 
 console.log(generateDependencyReport());
 
 keepAlive();
 
 const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildVoiceStates,
-    GatewayIntentBits.GuildMessages,
-  ],
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.GuildMessages,
+    ],
 });
 
 client.player = createAudioPlayer({
-  behaviors: {
-    noSubscriber: NoSubscriberBehavior.Play,
-  },
+    behaviors: {
+        noSubscriber: NoSubscriberBehavior.Play,
+    },
 });
 
 client.player.queue = []; // Array of Tracks
@@ -57,68 +57,70 @@ globalThis.client = client;
  * Register commands
  */
 client.commands = new Collection();
-const foldersPath = path.join(__dirname, "commands");
+const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
 
 for (const folder of commandFolders) {
-  // Grab all the command files from the commands directory you created earlier
-  const commandsPath = path.join(foldersPath, folder);
-  const commandFiles = fs
-    .readdirSync(commandsPath)
-    .filter((file) => file.endsWith(".js"));
-  // Grab the SlashCommandBuilder#toJSON() output of each command's data for deployment
-  for (const file of commandFiles) {
-    const filePath = path.join(commandsPath, file);
-    const command = require(filePath);
-    if ("data" in command && "execute" in command) {
-      client.commands.set(command.data.name, command);
-    } else {
-      console.log(
-        `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`,
-      );
-    }
+    // Grab all the command files from the commands directory you created earlier
+    const commandsPath = path.join(foldersPath, folder);
+    const commandFiles = fs
+        .readdirSync(commandsPath)
+        .filter((file) => file.endsWith('.js'));
+    // Grab the SlashCommandBuilder#toJSON() output of each command's data for deployment
+    for (const file of commandFiles) {
+        const filePath = path.join(commandsPath, file);
+        const command = require(filePath);
+        if ('data' in command && 'execute' in command) {
+            client.commands.set(command.data.name, command);
+        } else {
+            console.log(
+                `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`
+            );
+        }
 
-    delete require.cache[require.resolve(filePath)];
-  }
+        delete require.cache[require.resolve(filePath)];
+    }
 }
 
 /**
  * Register events
  */
 const discordEventFiles = fs
-  .readdirSync("./events/discord")
-  .filter((file) => file.endsWith(".js"));
+    .readdirSync('./events/discord')
+    .filter((file) => file.endsWith('.js'));
 const playerEventFiles = fs
-  .readdirSync("./events/player")
-  .filter((file) => file.endsWith(".js"));
+    .readdirSync('./events/player')
+    .filter((file) => file.endsWith('.js'));
 
 for (const file of discordEventFiles) {
-  const event = require(`./events/discord/${file}`);
-  if (event.once) {
-    client.once(event.name, (...args) => {
-      console.log(`[${new Date().toLocaleString()}] [Discord] [${event.name}]`);
-      event.execute(...args);
-    });
-  } else {
-    client.on(event.name, (...args) => {
-      // console.log(`[${new Date().toLocaleString()}] [Discord] [${event.name}]`);
-      event.execute(...args);
-    });
-  }
+    const event = require(`./events/discord/${file}`);
+    if (event.once) {
+        client.once(event.name, (...args) => {
+            console.log(
+                `[${new Date().toLocaleString()}] [Discord] [${event.name}]`
+            );
+            event.execute(...args);
+        });
+    } else {
+        client.on(event.name, (...args) => {
+            // console.log(`[${new Date().toLocaleString()}] [Discord] [${event.name}]`);
+            event.execute(...args);
+        });
+    }
 
-  delete require.cache[require.resolve(`./events/discord/${file}`)];
+    delete require.cache[require.resolve(`./events/discord/${file}`)];
 }
 for (const file of playerEventFiles) {
-  const event = require(`./events/player/${file}`);
+    const event = require(`./events/player/${file}`);
 
-  client.player.addListener(event.name, (...args) => {
-    console.log(
-      `[${new Date().toLocaleString()}] [Event] [${event.name.toUpperCase()}]`,
-    );
-    event.execute(...args);
-  });
+    client.player.addListener(event.name, (...args) => {
+        console.log(
+            `[${new Date().toLocaleString()}] [Event] [${event.name.toUpperCase()}]`
+        );
+        event.execute(...args);
+    });
 
-  delete require.cache[require.resolve(`./events/player/${file}`)];
+    delete require.cache[require.resolve(`./events/player/${file}`)];
 }
 
 client.login(TOKEN_1 + TOKEN_2);
