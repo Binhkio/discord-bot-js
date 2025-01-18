@@ -1,8 +1,7 @@
 const { endedEmbed } = require("../../components/embed");
 
-
 module.exports = {
-  name: 'back',
+  name: "back",
   async execute({ interaction }) {
     // const player = global.client.player;
     // const queue = player.queue;
@@ -23,5 +22,5 @@ module.exports = {
     // player.emit('start', queue[player.currIndex]);
 
     interaction.deleteReply();
-  }
-}
+  },
+};

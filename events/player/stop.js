@@ -2,22 +2,22 @@ const { getVoiceConnection } = require("@discordjs/voice");
 const { endedEmbed } = require("../../components/embed");
 
 module.exports = {
-    name: 'stop',
-    async execute() {
-        const player = global.client.player;
-        
-        if (player?.currMsg) {
-            const embed = endedEmbed(player.currTrack);
-            await player.currMsg.edit({
-                embeds: [embed],
-                components: [],
-            });
-        }
+  name: "stop",
+  async execute() {
+    const player = global.client.player;
 
-        player.isPlaying = false;
-        player.queue = [];
-        player.currMsg = null;
+    if (player?.currMsg) {
+      const embed = endedEmbed(player.currTrack);
+      await player.currMsg.edit({
+        embeds: [embed],
+        components: [],
+      });
+    }
 
-        player.stop();
-    },
+    player.isPlaying = false;
+    player.queue = [];
+    player.currMsg = null;
+
+    player.stop();
+  },
 };

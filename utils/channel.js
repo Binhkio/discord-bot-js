@@ -1,8 +1,12 @@
-const { joinVoiceChannel, entersState, VoiceConnectionStatus } = require('@discordjs/voice');
-const { CommandInteraction } = require('discord.js');
+const {
+  joinVoiceChannel,
+  entersState,
+  VoiceConnectionStatus,
+} = require("@discordjs/voice");
+const { CommandInteraction } = require("discord.js");
 
 /**
- * @param {CommandInteraction} interaction 
+ * @param {CommandInteraction} interaction
  */
 async function createNewVoiceConnectionFromInteraction(interaction) {
   const guild = interaction.guild;
@@ -16,7 +20,11 @@ async function createNewVoiceConnectionFromInteraction(interaction) {
     selfMute: false,
   });
 
-  const voiceConnection = await entersState(initialVoiceConnection, VoiceConnectionStatus.Ready, 5e3);
+  const voiceConnection = await entersState(
+    initialVoiceConnection,
+    VoiceConnectionStatus.Ready,
+    5e3,
+  );
   console.log(`[NEW_CONNECT] [Guild: ${guild.id}] [Channel: ${channel.id}]`);
 
   return voiceConnection;
@@ -24,4 +32,4 @@ async function createNewVoiceConnectionFromInteraction(interaction) {
 
 module.exports = {
   createNewVoiceConnectionFromInteraction,
-}
+};

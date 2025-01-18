@@ -3,11 +3,12 @@ const {
   createNewVoiceConnectionFromInteraction,
 } = require("../../utils/channel");
 const { textToSpeech } = require("../../utils/tts");
+const { createListeningStream } = require("../../utils/stt");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("join")
-    .setDescription("Join your voice channel"),
+    .setName("record")
+    .setDescription("Record anything you said"),
   /**
    * @param {CommandInteraction} interaction
    */
@@ -29,6 +30,16 @@ module.exports = {
       textToSpeech(fullGreeting);
     }
 
-    await interaction.editReply("I'm here bro, let's play some musics..");
+    const legitUsers = interaction.member.voice.channel.members.filter(
+      (member) => !member.user.bot,
+    );
+
+    legitUsers.map(({ user }) => {
+      player.voiceConnection.receiver.speaking.once("start", (userId) => {
+        createListeningStream(player.voiceConnection.receiver, userId, user);
+      });
+    });
+
+    await interaction.editReply("Recording...");
   },
 };

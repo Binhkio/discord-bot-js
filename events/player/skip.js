@@ -1,10 +1,10 @@
 const { endedEmbed } = require("../../components/embed");
 
 module.exports = {
-  name: 'skip',
+  name: "skip",
   async execute() {
     const player = global.client.player;
-    
+
     if (player?.currMsg) {
       const embed = endedEmbed(player.currTrack);
       await player.currMsg.edit({
@@ -14,16 +14,20 @@ module.exports = {
     }
     player.currMsg = null;
 
-    if (!player.isLoop) { // Queue is not loop
-      if (player.queue.length > 0) { // Queue is not clear
+    if (!player.isLoop) {
+      // Queue is not loop
+      if (player.queue.length > 0) {
+        // Queue is not clear
         player.currTrack = player.queue.shift();
-        player.emit('start');
-      } else { // Queue is clear
-        player.emit('stop');
+        player.emit("start");
+      } else {
+        // Queue is clear
+        player.emit("stop");
       }
-    } else { // Queue is loop
+    } else {
+      // Queue is loop
       player.currTrack = player.queue.shift();
-      player.emit('start');
+      player.emit("start");
     }
   },
 };

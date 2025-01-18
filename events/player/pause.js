@@ -2,7 +2,7 @@ const { ActionRowBuilder } = require("discord.js");
 const { back, resume, skip, isLoop, stop } = require("../../components/button");
 
 module.exports = {
-  name: 'pause',
+  name: "pause",
   async execute() {
     const player = global.client.player;
     const currMsg = player.currMsg;
@@ -16,6 +16,5 @@ module.exports = {
     });
 
     player.pause();
-
   },
 };
