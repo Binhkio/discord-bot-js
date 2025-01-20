@@ -28,12 +28,22 @@ module.exports = {
             })
             .then((msg) => (player.currMsg = msg));
 
-        console.log(`=> Playing ${player.currTrack.url}`);
+        console.log(
+            `=> Playing ${player.currTrack.url || player.currTrack.video_url}`
+        );
 
         // Check if download url is existed
-        if (!player.downloadUrls[player.currTrack.id]) {
-            const dlUrl = await getDownloadUrl(player.currTrack.url);
-            player.downloadUrls[player.currTrack.id] = dlUrl;
+        if (
+            !player.downloadUrls[
+                player.currTrack.id || player.currTrack.videoId
+            ]
+        ) {
+            const dlUrl = await getDownloadUrl(
+                player.currTrack.url || player.currTrack.video_url
+            );
+            player.downloadUrls[
+                player.currTrack.id || player.currTrack.videoId
+            ] = dlUrl;
         }
 
         // Display play embed
@@ -43,13 +53,17 @@ module.exports = {
         });
 
         console.log(
-            `CURRENT_TRACK: ${player.currTrack.id} - ${
-                player.downloadUrls[player.currTrack.id]
+            `CURRENT_TRACK: ${
+                player.currTrack.id || player.currTrack.videoId
+            } - ${
+                player.downloadUrls[
+                    player.currTrack.id || player.currTrack.videoId
+                ]
             }`
         );
 
         const stream = await getStream(
-            player.downloadUrls[player.currTrack.id]
+            player.downloadUrls[player.currTrack.id || player.currTrack.videoId]
         );
 
         if (!stream) throw new Error('No stream found');

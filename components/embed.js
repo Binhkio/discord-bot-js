@@ -1,5 +1,6 @@
 const { EmbedBuilder, userMention } = require('discord.js');
 const progressBar = require('../utils/progressBar');
+const { formatSecondsToHMS } = require('../utils/time');
 
 const waitEmbed = () =>
     new EmbedBuilder()
@@ -26,12 +27,14 @@ const playEmbed = (queue, track) =>
         .setURL(track?.url)
         .addFields({
             name: '🪪 Nguồn',
-            value: `\`${track?.channel?.name}\``,
+            value: `\`${track?.channel?.name || track?.ownerChannelName}\``,
             inline: true,
         })
         .addFields({
             name: '🕖 Thời lượng',
-            value: `\`${track?.durationRaw}\``,
+            value: `\`${
+                track?.durationRaw || formatSecondsToHMS(track?.lengthSeconds)
+            }\``,
             inline: true,
         })
         .addFields({
@@ -82,12 +85,14 @@ const addEmbed = (queue, track) =>
         .setURL(track?.url)
         .addFields({
             name: '🪪 Nguồn',
-            value: `\`${track?.channel?.name}\``,
+            value: `\`${track?.channel?.name || track?.ownerChannelName}\``,
             inline: true,
         })
         .addFields({
             name: '🕖 Thời lượng',
-            value: `\`${track?.durationRaw}\``,
+            value: `\`${
+                track?.durationRaw || formatSecondsToHMS(track?.lengthSeconds)
+            }\``,
             inline: true,
         })
         .addFields({

@@ -4,6 +4,7 @@ const {
     createNewVoiceConnectionFromInteraction,
 } = require('../../utils/channel');
 const playdl = require('play-dl');
+const ytdl = require('@distube/ytdl-core');
 const { textToSpeech } = require('../../utils/tts');
 const { getDownloadUrl } = require('../../utils/stream');
 
@@ -60,15 +61,19 @@ module.exports = {
         ) {
             const valid_url = url.split('&')[0];
 
-            const info = await playdl.video_info(valid_url);
-            const track = info.video_details;
+            // const info = await playdl.video_info(valid_url);
+            // const track = info.video_details;
+            const info = await ytdl.getBasicInfo(valid_url);
+            const track = info.videoDetails;
             track.user = interaction.user;
 
             // Get download url
-            getDownloadUrl(track.url).then((dlUrl) => {
-                player.downloadUrls[track.id] = dlUrl;
+            getDownloadUrl(track.url || track.video_url).then((dlUrl) => {
+                player.downloadUrls[track.id || track.videoId] = dlUrl;
                 console.log(
-                    `ADD_TRACK: ${track.id} - ${player.downloadUrls[track.id]}`
+                    `ADD_TRACK: ${track.id || track.videoId} - ${
+                        player.downloadUrls[track.id || track.videoId]
+                    }`
                 );
             });
 
@@ -90,11 +95,11 @@ module.exports = {
                 track.user = interaction.user;
 
                 // Get download url
-                getDownloadUrl(track.url).then((dlUrl) => {
-                    player.downloadUrls[track.id] = dlUrl;
+                getDownloadUrl(track.url || track.video_url).then((dlUrl) => {
+                    player.downloadUrls[track.id || track.videoId] = dlUrl;
                     console.log(
-                        `ADD_TRACK: ${track.id} - ${
-                            player.downloadUrls[track.id]
+                        `ADD_TRACK: ${track.id || track.videoId} - ${
+                            player.downloadUrls[track.id || track.videoId]
                         }`
                     );
                 });
