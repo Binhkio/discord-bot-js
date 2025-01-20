@@ -45,6 +45,7 @@ client.player = createAudioPlayer({
 });
 
 client.player.queue = []; // Array of Tracks
+client.player.downloadUrls = {};
 client.player.prevQueue = [];
 client.player.isPlaying = false;
 client.player.isLoop = false;

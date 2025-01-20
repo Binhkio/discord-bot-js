@@ -5,6 +5,7 @@ const {
 } = require('../../utils/channel');
 const playdl = require('play-dl');
 const { textToSpeech } = require('../../utils/tts');
+const { getDownloadUrl } = require('../../utils/stream');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -63,6 +64,14 @@ module.exports = {
             const track = info.video_details;
             track.user = interaction.user;
 
+            // Get download url
+            getDownloadUrl(track.url).then((dlUrl) => {
+                player.downloadUrls[track.id] = dlUrl;
+                console.log(
+                    `ADD_TRACK: ${track.id} - ${player.downloadUrls[track.id]}`
+                );
+            });
+
             // Add track to queue
             player.queue.push(track);
 
@@ -79,6 +88,17 @@ module.exports = {
 
             tracks.forEach((track) => {
                 track.user = interaction.user;
+
+                // Get download url
+                getDownloadUrl(track.url).then((dlUrl) => {
+                    player.downloadUrls[track.id] = dlUrl;
+                    console.log(
+                        `ADD_TRACK: ${track.id} - ${
+                            player.downloadUrls[track.id]
+                        }`
+                    );
+                });
+
                 // Add tracks to queue
                 player.queue.push(track);
             });

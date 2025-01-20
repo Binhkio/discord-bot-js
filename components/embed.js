@@ -1,6 +1,13 @@
 const { EmbedBuilder, userMention } = require('discord.js');
 const progressBar = require('../utils/progressBar');
 
+const waitEmbed = () =>
+    new EmbedBuilder()
+        .setColor('Yellow')
+        .setTitle('⚠️ Vui lòng đợi một chút 🤏')
+        .setTimestamp()
+        .setFooter({ text: '_Developed by Binhkio_' });
+
 const playEmbed = (queue, track) =>
     new EmbedBuilder()
         .setAuthor({
@@ -136,6 +143,7 @@ const multiAddEmbed = (queue, info, tracks) =>
         .setFooter({ text: `_Developed by Binhkio_` });
 
 module.exports = {
+    waitEmbed,
     playEmbed,
     endedEmbed,
     addEmbed,
